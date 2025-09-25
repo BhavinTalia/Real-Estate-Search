@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Real Estate Search Service — Project Planner</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--muted:#9aa7bd;--accent:#7dd3fc;--glass:rgba(255,255,255,0.03)}
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial; background:linear-gradient(180deg,#071025 0%,#07192a 100%); color:#e6eef6; margin:0; padding:24px}
+    .wrap{max-width:1100px;margin:0 auto}
+    h1{font-size:22px;margin:0 0 8px}
+    .grid{display:grid;grid-template-columns:1fr 360px;gap:20px}
+    .card{background:var(--card); padding:18px;border-radius:12px; box-shadow:0 6px 20px rgba(2,6,23,0.6)}
+    .muted{color:var(--muted)}
+    pre{background:var(--glass); padding:12px;border-radius:8px;overflow:auto;color:#cfeefa}
+    .section-title{font-weight:600;margin:8px 0}
+    .task{display:flex;align-items:flex-start;gap:12px;padding:10px;border-radius:8px}
+    .task:hover{background:rgba(255,255,255,0.02)}
+    .phase{display:inline-block;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.03);font-size:12px;color:var(--muted)}
+    .progress-bar{height:12px;background:rgba(255,255,255,0.06);border-radius:999px;overflow:hidden}
+    .progress-bar > i{display:block;height:100%;background:linear-gradient(90deg,#38bdf8,#06b6d4);width:0%}
+    .meta{font-size:13px;color:var(--muted)}
+    label{cursor:pointer}
+    button{background:linear-gradient(90deg,#06b6d4,#7dd3fc);color:#022; border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
+    .small{font-size:13px;padding:6px 10px}
+    .task-left{flex:1}
+    .task-right{min-width:220px;text-align:right}
+    .branch{font-family:monospace;font-size:12px;color:#bfefff}
+    .footer-note{color:var(--muted);font-size:13px;margin-top:12px}
+    .controls{display:flex;gap:8px;align-items:center}
+    .search{width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit}
+    .pill{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.02);font-size:13px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Real Estate Search Service — Project Planner</h1>
+    <p class="muted">Backend-only project with Node.js, Express, MongoDB & Elasticsearch. This interactive planner persists tasks to <code>localStorage</code>.</p>
+
+    <div class="grid" style="margin-top:16px">
+      <div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div class="pill">Overview</div>
+              <h2 style="margin:6px 0 2px">Real Estate Search Service</h2>
+              <div class="muted">Searchable, geo-aware backend for property listings with analytics, alerts, and recommendations.</div>
+            </div>
+            <div style="text-align:right">
+              <div class="meta">Total estimate hours</div>
+              <div id="total-hours" style="font-weight:700;font-size:20px">—</div>
+            </div>
+          </div>
+
+          <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:14px 0">
+
+          <div>
+            <div class="section-title">Tech stack</div>
+            <ul class="muted">
+              <li>Node.js + Express.js (REST API)</li>
+              <li>MongoDB (primary datastore)</li>
+              <li>Elasticsearch (search & aggregations)</li>
+              <li>Docker / Docker Compose (local dev & Elasticsearch)</li>
+              <li>Jest + Supertest (testing)</li>
+              <li>Winston or Pino (logging)</li>
+              <li>Swagger / OpenAPI (API docs)</li>
+              <li>Redis (optional: rate-limiting, caching)</li>
+              <li>CI: GitHub Actions</li>
+            </ul>
+          </div>
+
+          <div style="margin-top:12px">
+            <div class="section-title">Project folder structure</div>
+            <pre>
+project-root/
+├─ service/ (express app)
+│  ├─ src/
+│  │  ├─ controllers/
+│  │  ├─ routes/
+│  │  ├─ models/        # Mongoose models
+│  │  ├─ services/      # ES & DB indexing services
+│  │  ├─ repositories/  # MongoDB access
+│  │  ├─ jobs/          # background indexers / workers
+│  │  ├─ utils/
+│  │  └─ app.js
+│  ├─ tests/
+│  └─ package.json
+├─ infra/
+│  ├─ docker-compose.yml
+│  ├─ elastic/ (ES config)
+│  └─ k8s/ (optional)
+├─ scripts/ (db seeders, migrations)
+├─ docs/ (api & design)
+└─ README.md
+            </pre>
+          </div>
+
+          <div style="margin-top:12px">
+            <div class="section-title">Initial setup commands</div>
+            <pre>
+# Clone
+git clone <your-repo> && cd project-root/service
+
+# Install
+npm install
+
+# Start local services with docker
+docker-compose up -d --build
+# (mongo + elasticsearch + kibana optional)
+
+# Start dev server
+npm run dev
+
+# Run tests
+npm test
+            </pre>
+          </div>
+
+          <div style="margin-top:12px">
+            <div class="section-title">Quick notes</div>
+            <ul class="muted">
+              <li>Keep Elasticsearch mappings explicit for geo, keyword, and text fields.</li>
+              <li>Index denormalized searchable fields (title, description, amenities).</li>
+              <li>Use bulk indexing for initial import (scripts/seed.js).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div class="section-title">Tasks</div>
+            </div>
+            <div class="controls">
+              <input id="filterPhase" class="search" placeholder="Filter by phase or search" />
+              <button id="resetBtn" class="small">Reset all progress</button>
+            </div>
+          </div>
+
+          <div style="margin-top:12px">
+            <div class="meta">Progress</div>
+            <div style="display:flex;gap:12px;align-items:center;margin-top:6px">
+              <div style="flex:1">
+                <div class="progress-bar"><i id="progressFill"></i></div>
+              </div>
+              <div style="width:120px;text-align:right"><span id="progressPercent">0%</span></div>
+            </div>
+            <div style="margin-top:8px" class="muted">Completed tasks: <span id="completed-count">0</span> / <span id="total-count">0</span></div>
+          </div>
+
+          <div id="tasksList" style="margin-top:12px;max-height:520px;overflow:auto"></div>
+
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <div class="section-title">Phase overview & stats</div>
+          <div id="phase-stats" style="display:flex;flex-direction:column;gap:8px;margin-top:8px"></div>
+
+          <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0">
+
+          <div class="section-title">Branches & tasks (branch name, estimate hours, short desc)</div>
+          <div id="branchesList" style="margin-top:8px"></div>
+
+          <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0">
+
+          <div class="section-title">Progress export / usage</div>
+          <p class="muted">This planner stores progress in <code>localStorage</code>. Use the reset button to clear progress. Branch names provided are suggested git branches for each task.</p>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <div class="section-title">Project estimate & timeline</div>
+          <div class="muted">Total estimated hours (sum of task estimates) and a helpful baseline timeline.</div>
+          <div style="margin-top:10px">
+            <div><strong>Estimated total hours:</strong> <span id="estimate-hours">—</span></div>
+            <div style="margin-top:6px"><strong>Suggested timeline:</strong></div>
+            <ol class="muted" style="margin-top:6px">
+              <li>Week 1–2: MVP (core models, basic endpoints, search)</li>
+              <li>Week 3: Geo-search, filters, aggregations</li>
+              <li>Week 4: Indexing pipelines & bulk import</li>
+              <li>Week 5: Testing, CI, docs, deployment</li>
+            </ol>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="footer-note">Tip: open DevTools & Application → Local Storage to inspect raw saved JSON. This file is standalone — you can save it and open in a browser.</div>
+  </div>
+
+  <script>
+    // --- TASK DATA ---
+    const TASKS_KEY = 'ress.tasks.v1';
+
+    const defaultTasks = [
+      // Planning
+      {id:1, title:'Project kickoff & requirements', phase:'Planning', estimate:4, branch:'feat/kickoff', desc:'Gather requirements, define MVP and data model', completed:false},
+      {id:2, title:'Design data models (Mongo & ES)', phase:'Planning', estimate:6, branch:'feat/models', desc:'Create Mongoose schemas and ES mapping design', completed:false},
+
+      // Backend - Core
+      {id:3, title:'Setup Express skeleton', phase:'Backend', estimate:3, branch:'chore/init-express', desc:'Project structure, basic server, env handling', completed:false},
+      {id:4, title:'Property CRUD endpoints', phase:'Backend', estimate:10, branch:'feat/property-crud', desc:'Create REST endpoints for properties', completed:false},
+      {id:5, title:'User & Auth (JWT)', phase:'Backend', estimate:6, branch:'feat/auth', desc:'Simple user model and JWT authentication', completed:false},
+
+      // MongoDB
+      {id:6, title:'MongoDB integration & models', phase:'Database', estimate:6, branch:'feat/mongo-setup', desc:'Mongoose connection and models', completed:false},
+      {id:7, title:'Seed script & sample data', phase:'Database', estimate:4, branch:'feat/seed-data', desc:'Seed initial property data and users', completed:false},
+
+      // Elasticsearch
+      {id:8, title:'Elasticsearch setup (docker)', phase:'Elasticsearch', estimate:3, branch:'chore/es-docker', desc:'Docker Compose for Elasticsearch and Kibana', completed:false},
+      {id:9, title:'Index mapping & analyzers', phase:'Elasticsearch', estimate:6, branch:'feat/es-mapping', desc:'Define mappings for geo, text, keyword fields', completed:false},
+      {id:10, title:'Indexing service (sync & bulk)', phase:'Elasticsearch', estimate:8, branch:'feat/es-indexer', desc:'Service to index docs into ES (bulk + realtime sync)', completed:false},
+      {id:11, title:'Search endpoints + relevance tuning', phase:'Elasticsearch', estimate:8, branch:'feat/search', desc:'Search API with filters, sorting and relevance tuning', completed:false},
+
+      // Geo & Filters
+      {id:12, title:'Geo-search & distance filters', phase:'Features', estimate:6, branch:'feat/geo-search', desc:'Nearby search, bounding boxes, distance sorts', completed:false},
+      {id:13, title:'Range filters (price, size)', phase:'Features', estimate:4, branch:'feat/filters', desc:'Add range filters and facet counts', completed:false},
+      {id:14, title:'Amenities & facets', phase:'Features', estimate:4, branch:'feat/facets', desc:'Faceted navigation and amenity filters', completed:false},
+
+      // Analytics & Extras
+      {id:15, title:'Aggregations & stats APIs', phase:'Analytics', estimate:6, branch:'feat/aggregations', desc:'Average price, counts, distributions', completed:false},
+      {id:16, title:'Similar properties & recommendations', phase:'Analytics', estimate:6, branch:'feat/recommend', desc:'"More like this" suggestions and similarity scoring', completed:false},
+      {id:17, title:'Alerts & notifications (email)', phase:'Extras', estimate:6, branch:'feat/alerts', desc:'Alert when property matches saved criteria', completed:false},
+
+      // DevOps & Testing
+      {id:18, title:'Dockerize service', phase:'DevOps', estimate:4, branch:'chore/dockerize', desc:'Dockerfile and Docker Compose integration', completed:false},
+      {id:19, title:'CI pipeline (GitHub Actions)', phase:'DevOps', estimate:4, branch:'chore/ci', desc:'Run tests, lint, and build on PRs', completed:false},
+      {id:20, title:'End-to-end tests + unit tests', phase:'Testing', estimate:8, branch:'test/e2e', desc:'Jest & Supertest tests for endpoints', completed:false},
+
+      // Docs
+      {id:21, title:'API docs (Swagger/OpenAPI)', phase:'Docs', estimate:4, branch:'docs/openapi', desc:'Document endpoints and example payloads', completed:false},
+      {id:22, title:'README & deployment guide', phase:'Docs', estimate:3, branch:'docs/readme', desc:'Project README with deployment steps', completed:false}
+    ];
+
+    // --- STORAGE & STATE ---
+    function loadTasks(){
+      const raw = localStorage.getItem(TASKS_KEY);
+      if(!raw) return defaultTasks.slice();
+      try{ const t = JSON.parse(raw); if(Array.isArray(t)) return t; }catch(e){}
+      return defaultTasks.slice();
+    }
+
+    function saveTasks(tasks){ localStorage.setItem(TASKS_KEY, JSON.stringify(tasks)); }
+
+    let tasks = loadTasks();
+
+    // --- RENDER ---
+    const tasksList = document.getElementById('tasksList');
+    const branchesList = document.getElementById('branchesList');
+    const totalHoursEl = document.getElementById('total-hours');
+    const estimateHoursEl = document.getElementById('estimate-hours');
+    const progressFill = document.getElementById('progressFill');
+    const progressPercent = document.getElementById('progressPercent');
+    const completedCountEl = document.getElementById('completed-count');
+    const totalCountEl = document.getElementById('total-count');
+    const phaseStatsEl = document.getElementById('phase-stats');
+
+    function calcTotals(tasks){
+      const total = tasks.reduce((s,t)=>s+t.estimate,0);
+      const completedHours = tasks.filter(t=>t.completed).reduce((s,t)=>s+t.estimate,0);
+      const completedCount = tasks.filter(t=>t.completed).length;
+      return {total,completedHours,completedCount, totalCount: tasks.length};
+    }
+
+    function render(){
+      const filter = document.getElementById('filterPhase').value.trim().toLowerCase();
+      tasksList.innerHTML='';
+      branchesList.innerHTML='';
+
+      const {total,completedHours,completedCount,totalCount} = calcTotals(tasks);
+      totalHoursEl.textContent = total + ' hrs';
+      estimateHoursEl.textContent = total + ' hrs';
+      const pct = total ===0 ? 0 : Math.round((completedHours/total)*100);
+      progressFill.style.width = pct + '%';
+      progressPercent.textContent = pct + '%';
+      completedCountEl.textContent = completedCount;
+      totalCountEl.textContent = totalCount;
+
+      // Phase stats
+      const grouped = {};
+      tasks.forEach(t=>{ grouped[t.phase] = grouped[t.phase] || {count:0, hours:0, done:0}; grouped[t.phase].count++; grouped[t.phase].hours+=t.estimate; if(t.completed) grouped[t.phase].done++; });
+      phaseStatsEl.innerHTML='';
+      Object.keys(grouped).forEach(phase=>{
+        const g = grouped[phase];
+        const div = document.createElement('div');
+        div.innerHTML = `<div style="display:flex;justify-content:space-between"><div><strong>${phase}</strong> <span class=\"muted\">(${g.count} tasks)</span></div><div class=\"muted\">${g.done}/${g.count} done — ${g.hours} hrs</div></div>`;
+        phaseStatsEl.appendChild(div);
+      });
+
+      // Tasks list
+      tasks.filter(t=>{ if(!filter) return true; return (t.phase+ ' '+ t.title + ' ' + t.desc + ' ' + t.branch).toLowerCase().includes(filter); }).forEach(t=>{
+        const el = document.createElement('div'); el.className='task';
+        el.innerHTML = `
+          <div style=\"width:28px;display:flex;align-items:center;justify-content:center\"> 
+            <input type=\"checkbox\" data-id=\"${t.id}\" ${t.completed ? 'checked': ''} />
+          </div>
+          <div class=\"task-left\">
+            <div style=\"display:flex;justify-content:space-between;gap:12px;align-items:center\">
+              <div>
+                <div style=\"font-weight:600\">${t.title}</div>
+                <div class=\"muted\" style=\"margin-top:6px\">${t.desc}</div>
+              </div>
+              <div style=\"text-align:right\">
+                <div class=\"branch\">${t.branch}</div>
+                <div class=\"muted\">${t.estimate} hrs • <span class=\"phase\">${t.phase}</span></div>
+              </div>
+            </div>
+          </div>
+        `;
+        tasksList.appendChild(el);
+      });
+
+      // Branches list
+      tasks.forEach(t=>{
+        const d = document.createElement('div');
+        d.style.padding='8px'; d.style.borderRadius='8px'; d.style.background='rgba(255,255,255,0.01)'; d.style.marginBottom='8px';
+        d.innerHTML = `<div style=\"display:flex;justify-content:space-between\"><div><strong>${t.title}</strong><div class=\"muted\">${t.desc}</div></div><div style=\"text-align:right\"><div class=\"branch\">${t.branch}</div><div class=\"muted\">${t.estimate} hrs</div></div></div>`;
+        branchesList.appendChild(d);
+      });
+
+      // Attach checkbox handlers
+      document.querySelectorAll('[data-id]').forEach(cb=>{
+        cb.addEventListener('change', (e)=>{
+          const id = Number(e.target.getAttribute('data-id'));
+          const idx = tasks.findIndex(x=>x.id===id);
+          if(idx>-1){ tasks[idx].completed = e.target.checked; saveTasks(tasks); render(); }
+        });
+      });
+    }
+
+    // Reset button
+    document.getElementById('resetBtn').addEventListener('click', ()=>{
+      if(!confirm('Reset all progress? This will uncheck all tasks and clear localStorage for this planner.')) return;
+      tasks = defaultTasks.map(t=>({ ...t, completed:false }));
+      saveTasks(tasks);
+      render();
+    });
+
+    // Filter input
+    document.getElementById('filterPhase').addEventListener('input', ()=> render());
+
+    // Initial render
+    render();
+
+    // Save on unload
+    window.addEventListener('beforeunload', ()=> saveTasks(tasks));
+
+  </script>
+</body>
+</html>
