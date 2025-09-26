@@ -8,14 +8,17 @@ import {
 
 export const PropertyCreate = async (req, res) => {
   try {
-    const property = await createProperty(req.body);
+    if (!req.user) return res.status(401).json({ message: "Not authorized" });
+
+    const property = await createProperty({ ...req.body, postedBy: req.user._id });
+
     res.status(201).json({
       message: "Property Created Successfully.",
       property,
     });
   } catch (error) {
     res.status(500).json({
-      messsage: "Failed to Create Property.",
+      message: "Failed to Create Property.",
       error: error.message,
     });
   }

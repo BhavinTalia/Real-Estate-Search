@@ -39,7 +39,11 @@ export const deleteProperty = async (id) => {
 
 export const listProperties = async (filters = {}, options = {}) => {
   const { limit = 20, skip = 0, sort = { createdAt: -1 } } = options;
-  const query = Property.find(filters).limit(limit).skip(skip).sort(sort);
+  const query = Property.find(filters)
+    .limit(limit)
+    .skip(skip)
+    .sort(sort)
+    .populate("postedBy", "name email role");
   const properties = await query.exec();
   return properties;
 };

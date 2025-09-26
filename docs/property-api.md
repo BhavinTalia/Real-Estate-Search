@@ -15,6 +15,7 @@ This document provides sample cURL requests to test all CRUD operations for the 
 ```bash
 curl -X POST http://localhost:5000/api/property \
 -H "Content-Type: application/json" \
+-H "Authorization: Bearer {JWT_TOKEN}"
 -d '{
   "title": "Luxurious 2BHK Condo",
   "description": "A modern 2-bedroom condominium with panoramic city views, premium interiors, and top-notch facilities.",
