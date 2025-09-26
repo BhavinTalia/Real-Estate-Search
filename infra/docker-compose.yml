@@ -27,5 +27,21 @@ services:
     depends_on:
       - elasticsearch
 
+  app:
+    build: ../service
+    container_name: estate
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+      - elasticsearch
+    environment:
+      - MONGO_URI=mongodb://mongo:27017
+      - ELASTICSEARCH_HOST=http://elasticsearch:9200
+    volumes:
+      - ../service:/app
+      - /app/node_modules
+    command: nodemon --legacy-watch src/index.js
+
 volumes:
-  mongo-data:
+  mongo-data: {}
