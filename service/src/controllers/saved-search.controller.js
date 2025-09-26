@@ -1,9 +1,9 @@
-import * as savedSearchService from "../services/savedSearchService.js";
+import * as savedSearchService from "../services/saved-search.services.js";
 
 // Create a saved search
 export const createSavedSearch = async (req, res) => {
   try {
-    const savedSearch = await savedSearchService.createSavedSearch(req.user.id, req.body);
+    const savedSearch = await savedSearchService.createSavedSearch(req.user._id, req.body);
     res.status(201).json(savedSearch);
   } catch (err) {
     res.status(500).json({ message: err.message });
