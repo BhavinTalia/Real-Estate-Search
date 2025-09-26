@@ -7,11 +7,16 @@ import savedSearchRoutes from "./routes/saved-search.routes.js";
 import searchAnalyticsRoutes from "./routes/search-analytics.routes.js";
 import recommendationRoutes from "./routes/recommendation.routes.js";
 
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./repositories/swagger.js";
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
+
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get("/", (req, res) => res.json({ message: "Real Estate Search API" }));
 
