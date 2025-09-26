@@ -36,7 +36,7 @@ services:
       - mongo
       - elasticsearch
     environment:
-      - MONGO_URI=mongodb://mongo:27017
+      - MONGO_URI=mongodb://mongo:27017/realestate
       - ELASTICSEARCH_HOST=http://elasticsearch:9200
     volumes:
       - ../service:/app

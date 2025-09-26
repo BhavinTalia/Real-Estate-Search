@@ -6,10 +6,11 @@ import {
   listAllProperties,
   updatePropertyById,
 } from "../controllers/property.controller.js";
+import { protect } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/", PropertyCreate);            // Add Property
+router.post("/", protect ,PropertyCreate);   // Add Property
 router.get("/", listAllProperties);          // List all with filters
 router.get("/:id", getProperty);             // Get Single Property
 router.put("/:id", updatePropertyById);      // Update A Property
