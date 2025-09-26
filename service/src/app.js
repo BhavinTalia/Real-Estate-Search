@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
-// import propertyRoutes from "./routes/propertyRoutes.js";
+import propertyRoutes from "./routes/property.routes.js";
 
 const app = express();
 
@@ -11,6 +11,6 @@ app.use(morgan("dev"));
 
 app.get("/", (req, res) => res.json({ message: "Real Estate Search API" }));
 
-// app.use("/api/properties", propertyRoutes);
+app.use("/api/property", propertyRoutes);
 
 export default app;
