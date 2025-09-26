@@ -1,5 +1,5 @@
-import Property from "../models/Property";
-import Recommendation from "../models/Recommendations";
+import Property from "../models/Property.js";
+import Recommendation from "../models/Recommendations.js";
 
 // Simple similarity logic based on type/price range
 export const generateRecommendations = async (propertyId) => {

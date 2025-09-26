@@ -1,4 +1,4 @@
-import recommendationService from "../services/recommendation.services.js"
+import * as recommendationService from "../services/recommendation.services.js"
 
 export const generateRecommendations = async (req, res) => {
   try {
